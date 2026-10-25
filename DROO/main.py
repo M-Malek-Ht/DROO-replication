@@ -44,7 +44,7 @@ def plot_rate( rate_his, rolling_intv = 50):
     df = pd.DataFrame(rate_his)
 
 
-    mpl.style.use('seaborn')
+    mpl.style.use(   'seaborn-v0_8')
     fig, ax = plt.subplots(figsize=(15,8))
 #    rolling_intv = 20
 

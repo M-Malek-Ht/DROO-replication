@@ -13,7 +13,7 @@
 import scipy.io as sio                     # import scipy.io for .mat file I/
 import numpy as np                         # import numpy
 
-from memory import MemoryDNN
+from memoryPyTorch import MemoryDNN
 from optimization import bisection
 from main import plot_rate, save_to_txt
 

@@ -20,7 +20,7 @@ def plot_gain( gain_his):
     df = pd.DataFrame(gain_his)
     
     
-    mpl.style.use('seaborn')
+    mpl.style.use(   'seaborn-v0_8')
     fig, ax = plt.subplots(figsize=(15,8))
     rolling_intv = 20
 
