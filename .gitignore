@@ -7,3 +7,7 @@ __pycache__/
 
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
+
+# Quick test runs (made with --frames); not real results
+results/**/*_frames*
+figures/*_frames*
