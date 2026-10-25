@@ -1,0 +1,9 @@
+# Python virtual environment (rebuild it from requirements.txt)
+.venv/
+
+# Python's automatic cache files
+__pycache__/
+*.pyc
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
