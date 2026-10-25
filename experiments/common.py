@@ -72,7 +72,7 @@ def load_data(name):
 # ---------------------------------------------------------------------------
 def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
              memory=1024, batch_size=128, train_interval=10, lr=0.01,
-             seed=0, data_name=None, hook=None, verbose=True):
+             seed=0, data_name=None, hook=None, split=True, verbose=True):
     """
     Run DROO once and return everything it recorded.
 
@@ -92,6 +92,9 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
                    every frame; demos use it to change weights or switch WDs
                    off/on by editing state['channel'], state['rate'] and
                    state['weights'].
+    split          True  = 80/20 train/test split, as in mainPyTorch.py
+                   False = frame i uses data sample i, as in the two demos
+                           (demo_alternate_weights.py, demo_on_off.py)
     """
     set_seed(seed)
     if K is None:
@@ -135,7 +138,9 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
                 max_k = k_idx_his[-1] + 1
             K = min(max_k + 1, N)
 
-        if i < n - num_test:
+        if not split:
+            i_idx = i                                 # demos: sample i
+        elif i < n - num_test:
             i_idx = i % split_idx                     # training frames
         else:
             i_idx = i - n + num_test + split_idx      # test frames
@@ -165,7 +170,7 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
         "config": dict(N=N, n=n, K_initial=K_initial, delta=delta, decoder=decoder, memory=memory,
                        batch_size=batch_size, train_interval=train_interval,
                        lr=lr, seed=seed, data_name=data_name,
-                       num_test=num_test),
+                       split=split, num_test=num_test),
         "rate": np.asarray(rate_his),
         "rate_ratio": rate_ratio,
         "k_idx": np.asarray(k_idx_his),
