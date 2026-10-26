@@ -55,12 +55,27 @@ All commands are run from the project folder.
 | Redraw all figures from saved results | `python experiments/run_all.py --plot-only` | ~1 min |
 | Check that everything works (tiny runs) | `python experiments/run_all.py --quick` | ~3 min |
 | Check our fast solver against the authors' | `python baselines/test_p2_vectorized.py` | ~1 min |
+| Bonus: CPU vs GPU (in `.venv-gpu`, see below) | `python experiments/gpu_benchmark.py` | ~15 min |
 
 Each run saves `results/<experiment>/<run>.npz` (all recorded numbers) and
 `<run>_summary.json` (settings, headline numbers, machine info). Graphs are
 drawn from these files, so a graph can be redrawn without re-running.
 `run_all.py` skips runs whose results already exist, so it can be stopped
 and restarted.
+
+## Bonus GPU environment
+
+The replication itself uses the CPU-only environment above. The GPU test
+uses a second environment, so the CPU setup stays unchanged:
+
+```
+python -m venv .venv-gpu
+.venv-gpu\Scripts\Activate.ps1
+python -m pip install torch --index-url https://download.pytorch.org/whl/cu130
+python -m pip install numpy scipy matplotlib pandas
+python experiments/gpu_benchmark.py
+```
+(Tested with NVIDIA driver 591.84 / CUDA 13.1, RTX 5070 Ti Laptop GPU.)
 
 ## Randomness
 

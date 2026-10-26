@@ -1,5 +1,6 @@
 # Python virtual environment (rebuild it from requirements.txt)
 .venv/
+.venv-gpu/
 
 # Python's automatic cache files
 __pycache__/

@@ -1,0 +1,49 @@
+{
+  "rows": [
+    {
+      "N": 10,
+      "device": "cpu",
+      "frames": 3000,
+      "total_per_frame_s": 0.021170292833334922,
+      "network_per_frame_s": 0.0007845613002815905,
+      "avg_normalized_rate_test": 0.9936976909240182,
+      "solver_and_rest_per_frame_s": 0.02038573153305333
+    },
+    {
+      "N": 10,
+      "device": "cuda",
+      "frames": 3000,
+      "total_per_frame_s": 0.02037968469999032,
+      "network_per_frame_s": 0.001954223299981095,
+      "avg_normalized_rate_test": 0.993494006160599,
+      "solver_and_rest_per_frame_s": 0.018425461400009228
+    },
+    {
+      "N": 30,
+      "device": "cpu",
+      "frames": 3000,
+      "total_per_frame_s": 0.18852135336666834,
+      "network_per_frame_s": 0.0010705894993928572,
+      "avg_normalized_rate_test": 0.952612455553869,
+      "solver_and_rest_per_frame_s": 0.1874507638672755
+    },
+    {
+      "N": 30,
+      "device": "cuda",
+      "frames": 3000,
+      "total_per_frame_s": 0.20579561053332873,
+      "network_per_frame_s": 0.002945415467392498,
+      "avg_normalized_rate_test": 0.9575032886070801,
+      "solver_and_rest_per_frame_s": 0.20285019506593624
+    }
+  ],
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "cpu": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD",
+    "os": "Windows-11-10.0.26300-SP0",
+    "date": "2026-10-26 12:58:46",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU"
+  }
+}

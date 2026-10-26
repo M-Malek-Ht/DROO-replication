@@ -10,7 +10,8 @@ graphs are in `figures/`.
 
 ## Summary
 
-Every result in the paper was re-run: **Fig. 4-15 and Table 2**.
+Every result in the paper was re-run: **Fig. 4-15 and Table 2**, plus a
+bonus CPU-vs-GPU test.
 
 | Paper result | What it claims | Replicated? |
 |---|---|---|
@@ -261,6 +262,40 @@ Times relative to DROO (adaptive), ours (paper):
 calls), ~5% in the network's forward pass and ~1-2% in training,
 confirming the paper's remark that DROO's complexity "greatly depends on"
 solving (P2).
+
+---
+
+## Bonus (not in the paper): does a GPU help?
+
+`experiments/gpu_benchmark.py`, run in a separate environment with
+CUDA PyTorch (`.venv-gpu`) on an RTX 5070 Ti Laptop GPU. Same DROO run
+(adaptive K, Delta = 32, seed 0, 3,000 frames) on CPU and GPU. The network
+is the authors' MemoryDNN, moved to the GPU by a subclass (checked to give
+bit-identical results to the original on the CPU).
+
+| N | Device | Total s/frame | Network s/frame | Solver + rest s/frame | Avg normalized rate |
+|---|---|---|---|---|---|
+| 10 | CPU | 0.0212 | 0.00078 | 0.0204 | 0.99370 |
+| 10 | GPU | 0.0204 | 0.00195 | 0.0184 | 0.99349 |
+| 30 | CPU | 0.1885 | 0.00107 | 0.1875 | 0.95261 |
+| 30 | GPU | 0.2058 | 0.00295 | 0.2029 | 0.95750 |
+
+- **The GPU makes the network 2.5-2.8x slower**, not faster. The network is
+  tiny (two hidden layers, 200 neurons) and is called once per frame with a
+  single input, so copying data to and from the GPU and launching GPU work
+  costs more than the computation itself.
+- **The network is a small part of the time anyway:** ~4% of a frame for
+  N = 10 and ~0.6% for N = 30 on the CPU. The rest is the (P2) bisection
+  solver, which is plain Python/SciPy and cannot use the GPU.
+- The whole-run differences (+4% for N = 10, -8% for N = 30) come from the
+  CPU-side "solver + rest" part, not the network. GPU arithmetic rounds
+  slightly differently, so the two runs make slightly different decisions
+  (and adaptive K evaluates a different number of candidates) - which also
+  explains the small differences in the rate. These are run-to-run
+  variation, not a GPU speed-up.
+- **Conclusion:** for DROO as published, a GPU brings no benefit; the CPU
+  is the right choice, as in the paper. A GPU would only pay off with a much
+  larger network or many channels processed in one batch.
 
 ---
 

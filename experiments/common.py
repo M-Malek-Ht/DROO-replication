@@ -87,7 +87,8 @@ def load_data(name):
 # ---------------------------------------------------------------------------
 def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
              memory=1024, batch_size=128, train_interval=10, lr=0.01,
-             seed=0, data_name=None, hook=None, split=True, verbose=True):
+             seed=0, data_name=None, hook=None, split=True, verbose=True,
+             memory_class=None):
     """
     Run DROO once and return everything it recorded.
 
@@ -107,6 +108,8 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
                    every frame; demos use it to change weights or switch WDs
                    off/on by editing state['channel'], state['rate'] and
                    state['weights'].
+    memory_class   network class to use (default: the authors' MemoryDNN);
+                   gpu_benchmark.py passes a GPU-capable copy
     split          True  = 80/20 train/test split, as in mainPyTorch.py
                    False = frame i uses data sample i, as in the two demos
                            (demo_alternate_weights.py, demo_on_off.py)
@@ -127,7 +130,7 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
     split_idx = int(.8 * len(channel))
     num_test = min(len(channel) - split_idx, n - int(.8 * n))
 
-    mem = MemoryDNN(net=[N, 120, 80, N],
+    mem = (memory_class or MemoryDNN)(net=[N, 120, 80, N],
                     learning_rate=lr,
                     training_interval=train_interval,
                     batch_size=batch_size,
@@ -202,6 +205,7 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
         "K": np.asarray(K_his),
         "mode": np.asarray(mode_his),
         "loss": np.asarray(mem.cost_his),
+        "mem": mem,
         "summary": {
             # mean over the test frames (mainPyTorch.py prints almost the
             # same number; it skips the very last frame by accident)
