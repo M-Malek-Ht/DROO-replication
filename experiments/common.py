@@ -12,6 +12,7 @@ saving graphs to files instead of opening pop-up windows.
 """
 
 import json
+import os
 import platform
 import sys
 import time
@@ -32,6 +33,20 @@ DROO_DIR = PROJECT_ROOT / "DROO"
 DATA_DIR = DROO_DIR / "data"
 RESULTS_DIR = PROJECT_ROOT / "results"
 FIGURES_DIR = PROJECT_ROOT / "figures"
+
+# Quick-test mode: set the environment variable DROO_QUICK=1 (run_all.py
+# --quick does this) to run every experiment with tiny frame counts, writing
+# to quicktest/ instead of results/ and figures/. Only for checking that
+# everything runs; the numbers mean nothing.
+QUICK = bool(os.environ.get("DROO_QUICK"))
+if QUICK:
+    RESULTS_DIR = PROJECT_ROOT / "quicktest" / "results"
+    FIGURES_DIR = PROJECT_ROOT / "quicktest" / "figures"
+
+
+def frames(n, quick_n=400):
+    """Number of frames to use: n normally, quick_n in quick-test mode."""
+    return quick_n if QUICK else n
 
 # Let Python find the authors' files (memoryPyTorch.py, optimization.py).
 sys.path.insert(0, str(DROO_DIR))
@@ -128,6 +143,7 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
     rate_his, rate_ratio, k_idx_his, K_his, mode_his = [], [], [], [], []
 
     start = time.perf_counter()
+    cpu_start = time.process_time()
     for i in range(n):
         if hook is not None:
             hook(i, state)
@@ -172,6 +188,7 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
         mode_his.append(m_list[best])
 
     total_time = time.perf_counter() - start
+    cpu_time = time.process_time() - cpu_start
 
     rate_ratio = np.asarray(rate_ratio)
     return {
@@ -191,6 +208,10 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
             "avg_normalized_rate_test": float(rate_ratio[-num_test:].mean()),
             "total_time_s": total_time,
             "time_per_frame_s": total_time / n,
+            # CPU time used by this run only (fairer when several runs
+            # share the machine; Table 2 reports "CPU execution latency")
+            "cpu_time_s": cpu_time,
+            "cpu_time_per_frame_s": cpu_time / n,
         },
     }
 
@@ -251,6 +272,31 @@ def rolling(x, window=50):
         w = x[max(0, t - window + 1): t + 1]
         mean[t], lo[t], hi[t] = w.mean(), w.min(), w.max()
     return mean, lo, hi
+
+
+def moving_average_plot(curves, path, title, ylabel="Moving average of normalized rate",
+                        window=200, ylim=None, xlabel="Time frame t"):
+    """
+    Several moving-average curves on one graph (style of Figs. 9-12).
+    curves: list of (label, values)
+    """
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for label, values in curves:
+        mean, _, _ = rolling(values, window)
+        ax.plot(np.arange(1, len(mean) + 1), mean, linewidth=1.1, label=label)
+    if ylim:
+        ax.set_ylim(*ylim)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.grid(alpha=0.3)
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return path
 
 
 def plot_loss_and_rate(loss, rate_ratio, train_interval, path,

@@ -11,3 +11,7 @@ __pycache__/
 # Quick test runs (made with --frames); not real results
 results/**/*_frames*
 figures/*_frames*
+
+# Quick-test output and per-job logs
+quicktest/
+results/logs/

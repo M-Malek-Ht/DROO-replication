@@ -1,0 +1,32 @@
+{
+  "config": {
+    "N": 10,
+    "n": 10000,
+    "K_initial": 10,
+    "delta": null,
+    "decoder": "OP",
+    "memory": 1024,
+    "batch_size": 128,
+    "train_interval": 20,
+    "lr": 0.01,
+    "seed": 0,
+    "data_name": "data_10",
+    "split": true,
+    "num_test": 2000
+  },
+  "summary": {
+    "avg_normalized_rate_test": 0.9991801677613501,
+    "total_time_s": 430.76960749999853,
+    "time_per_frame_s": 0.04307696074999985,
+    "cpu_time_s": 425.15625,
+    "cpu_time_per_frame_s": 0.042515625
+  },
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "cpu": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD",
+    "os": "Windows-11-10.0.26300-SP0",
+    "date": "2026-10-26 10:18:48"
+  }
+}

@@ -1,0 +1,33 @@
+# Table 2 replication: CPU execution latency per channel (seconds)
+
+Ours = CPU time on this computer; paper = Intel i5-4570 (in brackets).
+
+| N | DROO fixed K=N | DROO adaptive (Delta=32) | CD | LR (solver reused) | LR (rebuilt per channel) |
+|---|---|---|---|---|---|
+| 10 | 4.0e-02 (3.6e-2) | 1.5e-02 (1.2e-2) | 2.2e-01 (2.0e-1) | 8.6e-03 (2.4e-1) | 1.4e-01 |
+| 20 | 1.6e-01 (1.3e-1) | 3.8e-02 (3.0e-2) | 1.4e+00 (1.3) | 1.4e-02 (5.3e-1) | 2.8e-01 |
+| 30 | 3.9e-01 (3.1e-1) | 6.1e-02 (5.9e-2) | 4.5e+00 (3.8) | 1.8e-02 (8.1e-1) | 4.3e-01 |
+
+How many times slower than DROO (adaptive K) - ours (paper):
+
+| N | DROO fixed K / adaptive | CD / DROO | LR reused / DROO | LR rebuilt / DROO |
+|---|---|---|---|---|
+| 10 | 2.6x (3.0x) | 14x (17x) | 0.6x (20x) | 8.9x (20x) |
+| 20 | 4.2x (4.3x) | 38x (43x) | 0.4x (18x) | 7.3x (18x) |
+| 30 | 6.3x (5.3x) | 73x (64x) | 0.3x (14x) | 7.0x (14x) |
+
+# Fig. 14 numbers: average computation rate (bits/s) on the 6,000 test channels
+
+| N | CD | DROO | LR | Edge | Local |
+|---|---|---|---|---|---|
+| 10 | 3.186e+06 | 3.185e+06 | 3.16e+06 | 2.891e+06 | 9.42e+05 |
+| 20 | 4.372e+06 | 4.354e+06 | 4.299e+06 | 3.687e+06 | 1.887e+06 |
+| 30 | 6.025e+06 | 5.973e+06 | 5.9e+06 | 4.856e+06 | 2.856e+06 |
+
+# Fig. 15 numbers: normalized rate on the 6,000 test channels
+
+| N | DROO median | DROO mean | DROO 25th pct | DROO share > 1 | LR median | LR mean | LR 25th pct | CD (100 ch.) mean |
+|---|---|---|---|---|---|---|---|---|
+| 10 | 1.0000 | 0.9997 | 1.0000 | 9.3% | 0.9924 | 0.9915 | 0.9864 | 1.0000 |
+| 20 | 1.0000 | 0.9953 | 0.9947 | 7.3% | 0.9840 | 0.9831 | 0.9765 | 1.0000 |
+| 30 | 0.9980 | 0.9902 | 0.9898 | 6.7% | 0.9796 | 0.9789 | 0.9724 | 1.0000 |
