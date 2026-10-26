@@ -118,7 +118,12 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
                     batch_size=batch_size,
                     memory_size=memory)
 
-    state = {"channel": channel, "rate": rate, "weights": []}
+    # Things a hook may change during the run:
+    #   channel, rate  -> data in use (rate = "best known" reference rate)
+    #   weights        -> WD weights ([] = authors' default [1, 1.5, 1, ...])
+    #   N_active       -> only the first N_active WDs go into the solver
+    #                     (the others are "switched off", as in demo_on_off.py)
+    state = {"channel": channel, "rate": rate, "weights": [], "N_active": N}
 
     rate_his, rate_ratio, k_idx_his, K_his, mode_his = [], [], [], [], []
 
@@ -151,7 +156,10 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
         m_list = mem.decode(h, K, decoder)
 
         # 2) solve (P2) for each candidate, keep the best
-        r_list = [bisection(h / 1000000, m, state["weights"])[0] for m in m_list]
+        #    (with all WDs active this is exactly mainPyTorch.py's call)
+        Na = state["N_active"]
+        w = state["weights"][:Na] if len(state["weights"]) else []
+        r_list = [bisection(h[:Na] / 1000000, m[:Na], w)[0] for m in m_list]
         best = int(np.argmax(r_list))
 
         # 3) store the best (h, action) pair and train every train_interval
