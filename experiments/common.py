@@ -278,12 +278,14 @@ def moving_average_plot(curves, path, title, ylabel="Moving average of normalize
                         window=200, ylim=None, xlabel="Time frame t"):
     """
     Several moving-average curves on one graph (style of Figs. 9-12).
-    curves: list of (label, values)
+    curves: list of (label, values) or (label, values, line_style)
     """
     fig, ax = plt.subplots(figsize=(8, 5))
-    for label, values in curves:
+    for curve in curves:
+        label, values = curve[0], curve[1]
+        style = curve[2] if len(curve) > 2 else "-"
         mean, _, _ = rolling(values, window)
-        ax.plot(np.arange(1, len(mean) + 1), mean, linewidth=1.1, label=label)
+        ax.plot(np.arange(1, len(mean) + 1), mean, style, linewidth=1.1, label=label)
     if ylim:
         ax.set_ylim(*ylim)
     ax.set_xlabel(xlabel)

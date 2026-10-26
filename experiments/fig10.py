@@ -47,8 +47,11 @@ def plot():
     curves = []
     for job in JOBS:
         decoder, k = job.split("_K")
+        # KNN dashed: for K = 1 and K = 2 the two methods choose exactly the
+        # same candidates, so their curves lie on top of each other
         curves.append(("%s, K = %s" % (names[decoder], k),
-                       load_result(EXPERIMENT, job)["rate_ratio"]))
+                       load_result(EXPERIMENT, job)["rate_ratio"],
+                       "--" if decoder == "KNN" else "-"))
     path = moving_average_plot(curves, FIGURES_DIR / "fig10_quantization.png",
                                title="Fig. 10 replication: quantization methods (N=10)",
                                ylim=(0.65, 1.0))

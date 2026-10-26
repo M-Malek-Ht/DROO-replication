@@ -186,7 +186,12 @@ def plot():
             "lr_mean": float(lr_ratio.mean()),
             "droo_q25": float(np.percentile(droo_ratio, 25)),
             "lr_q25": float(np.percentile(lr_ratio, 25)),
-            "droo_above_1": float((droo_ratio > 1 + 1e-9).mean()),
+            # share of channels where DROO beats the reference by more than
+            # rounding (stored and recomputed optima differ by ~1e-7)
+            "droo_above_1": float((droo_ratio > 1 + 1e-5).mean()),
+            "droo_above_099": float((droo_ratio >= 0.99).mean()),
+            "lr_above_099": float((lr_ratio >= 0.99).mean()),
+            "droo_p5": float(np.percentile(droo_ratio, 5)),
         })
 
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -197,11 +202,11 @@ def plot():
     width = 0.16
     x = np.arange(len(NS))
     for k, m in enumerate(methods):
-        ax.bar(x + (k - 2) * width, [means[N][m] / 1e5 for N in NS], width, label=m)
+        ax.bar(x + (k - 2) * width, [means[N][m] / 1e6 for N in NS], width, label=m)
     ax.set_xticks(x)
     ax.set_xticklabels([str(N) for N in NS])
     ax.set_xlabel("Number of WDs N")
-    ax.set_ylabel("Average computation rate Q (x 1e5 bits/s)")
+    ax.set_ylabel("Average computation rate Q (x 1e6 bits/s)")
     ax.set_title("Fig. 14 replication: computation rate of offloading algorithms")
     ax.legend(fontsize=8)
     ax.grid(axis="y", alpha=0.3)
@@ -217,7 +222,7 @@ def plot():
         pos += [3 * k + 0.6, 3 * k + 1.4]
         colors += ["lightblue", "khaki"]
     bp = ax.boxplot(data, positions=pos, widths=0.6, showfliers=False,
-                    whis=[1, 99], patch_artist=True,
+                    whis=1.5, patch_artist=True,
                     medianprops={"color": "red"})
     for patch, c in zip(bp["boxes"], colors):
         patch.set_facecolor(c)
@@ -226,7 +231,7 @@ def plot():
     ax.set_ylabel("Normalized computation rate")
     ax.set_ylim(0.95, 1.005)
     ax.set_title("Fig. 15 replication: DROO (blue) vs LR (yellow)\n"
-                 "box = 25th-75th percentile, red = median, whiskers = 1st-99th")
+                 "box = 25th-75th percentile, red = median, whiskers = 1.5 x IQR")
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     fig.savefig(FIGURES_DIR / "fig15_boxplot.png", dpi=150)
@@ -268,13 +273,14 @@ def plot():
         lines.append("| %d | %.4g | %.4g | %.4g | %.4g | %.4g |" % (
             N, m["CD"], m["DROO"], m["LR"], m["Edge Computing"], m["Local Computing"]))
     lines += ["", "# Fig. 15 numbers: normalized rate on the 6,000 test channels", "",
-              "| N | DROO median | DROO mean | DROO 25th pct | DROO share > 1 | LR median | LR mean | LR 25th pct | CD (100 ch.) mean |",
-              "|---|---|---|---|---|---|---|---|---|"]
+              "| N | DROO median | DROO mean | DROO 25th pct | DROO 5th pct | DROO >= 0.99 | DROO > 1 | LR median | LR mean | LR 25th pct | LR >= 0.99 | CD (100 ch.) mean |",
+              "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for row in table:
-        lines.append("| %d | %.4f | %.4f | %.4f | %.1f%% | %.4f | %.4f | %.4f | %.4f |" % (
+        lines.append("| %d | %.4f | %.4f | %.4f | %.4f | %.1f%% | %.1f%% | %.4f | %.4f | %.4f | %.1f%% | %.4f |" % (
             row["N"], row["droo_median"], row["droo_mean"], row["droo_q25"],
-            100 * row["droo_above_1"], row["lr_median"], row["lr_mean"],
-            row["lr_q25"], row["cd_ratio"]))
+            row["droo_p5"], 100 * row["droo_above_099"], 100 * row["droo_above_1"],
+            row["lr_median"], row["lr_mean"], row["lr_q25"],
+            100 * row["lr_above_099"], row["cd_ratio"]))
     text = "\n".join(lines) + "\n"
     (RESULTS_DIR / EXPERIMENT / "table2_fig14_15.md").write_text(text)
     print(text)

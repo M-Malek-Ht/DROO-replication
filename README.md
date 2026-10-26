@@ -51,7 +51,7 @@ All commands are run from the project folder.
 | Fig. 5 | `python experiments/fig05.py` | ~5 min |
 | Fig. 6 | `python experiments/fig06.py` (paper, K=10) and `--adaptive` (authors' demo) | ~5 + 3 min |
 | Fig. 8 | `python experiments/fig08.py` and `--adaptive` | ~5 + 3 min |
-| Fig. 4, 7, 9, 10, 11, 12, 13, 14, 15, Table 2 | `python experiments/run_all.py` (54 runs in parallel) | ~60-80 min |
+| Fig. 4, 7, 9, 10, 11, 12, 13, 14, 15, Table 2 | `python experiments/run_all.py` (54 runs, 11 at a time) | ~35 min |
 | Redraw all figures from saved results | `python experiments/run_all.py --plot-only` | ~1 min |
 | Check that everything works (tiny runs) | `python experiments/run_all.py --quick` | ~3 min |
 | Check our fast solver against the authors' | `python baselines/test_p2_vectorized.py` | ~1 min |
