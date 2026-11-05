@@ -4,17 +4,17 @@ Ours = CPU time on this computer; paper = Intel i5-4570 (in brackets).
 
 | N | DROO fixed K=N | DROO adaptive (Delta=32) | CD | LR (solver reused) | LR (rebuilt per channel) |
 |---|---|---|---|---|---|
-| 10 | 4.0e-02 (3.6e-2) | 1.5e-02 (1.2e-2) | 2.2e-01 (2.0e-1) | 8.6e-03 (2.4e-1) | 1.4e-01 |
-| 20 | 1.6e-01 (1.3e-1) | 3.8e-02 (3.0e-2) | 1.4e+00 (1.3) | 1.4e-02 (5.3e-1) | 2.8e-01 |
-| 30 | 3.9e-01 (3.1e-1) | 6.1e-02 (5.9e-2) | 4.5e+00 (3.8) | 1.8e-02 (8.1e-1) | 4.3e-01 |
+| 10 | 1.1e-02 (3.6e-2) | 4.8e-03 (1.2e-2) | 6.2e-02 (2.0e-1) | 2.5e-03 (2.4e-1) | 4.4e-02 |
+| 20 | 4.3e-02 (1.3e-1) | 1.1e-02 (3.0e-2) | 4.0e-01 (1.3) | 3.9e-03 (5.3e-1) | 9.6e-02 |
+| 30 | 1.1e-01 (3.1e-1) | 1.7e-02 (5.9e-2) | 1.2e+00 (3.8) | 5.2e-03 (8.1e-1) | 1.3e-01 |
 
 How many times slower than DROO (adaptive K) - ours (paper):
 
 | N | DROO fixed K / adaptive | CD / DROO | LR reused / DROO | LR rebuilt / DROO |
 |---|---|---|---|---|
-| 10 | 2.6x (3.0x) | 14x (17x) | 0.6x (20x) | 8.9x (20x) |
-| 20 | 4.2x (4.3x) | 38x (43x) | 0.4x (18x) | 7.3x (18x) |
-| 30 | 6.3x (5.3x) | 73x (64x) | 0.3x (14x) | 7.0x (14x) |
+| 10 | 2.4x (3.0x) | 13x (17x) | 0.5x (20x) | 9.1x (20x) |
+| 20 | 4.0x (4.3x) | 37x (43x) | 0.4x (18x) | 8.8x (18x) |
+| 30 | 6.4x (5.3x) | 74x (64x) | 0.3x (14x) | 7.9x (14x) |
 
 # Fig. 14 numbers: average computation rate (bits/s) on the 6,000 test channels
 

@@ -64,7 +64,13 @@ def label(job):
 def plot():
     runs = {job: load_result(EXPERIMENT, job_tag(job)) for job in JOBS}
 
-    p = moving_average_plot([(label(j), runs[j]["rate_ratio"]) for j in FIG11_12],
+    # Delta = 1024 gives exactly the same decisions as Delta = infinity in this
+    # run (the winner was never among the candidates it trims), so its curve
+    # lies on top of it; draw it dashed so both stay visible.
+    # draw Delta = 1024 last, so its dashes sit on top of the infinity line
+    order = [j for j in FIG11_12 if j != "1024"] + ["1024"]
+    p = moving_average_plot([(label(j), runs[j]["rate_ratio"],
+                              "--" if j == "1024" else "-") for j in order],
                             FIGURES_DIR / "fig11_delta_rate.png",
                             title="Fig. 11 replication: adaptive K, different Delta (N=10)",
                             ylim=(0.90, 1.0))
@@ -85,9 +91,14 @@ def plot():
         ys.append(mean200[-1])
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(xs, ys, "o-", color="tab:blue")
-    for x, y, d in zip(xs, ys, DELTAS):
-        ax.annotate("Delta=%d" % d, (x, y), textcoords="offset points",
-                    xytext=(5, -12), fontsize=8)
+    for k, (x, y, d) in enumerate(zip(xs, ys, DELTAS)):
+        # alternate below/above so neighbouring labels do not overlap
+        offset = (4, -14) if k % 2 == 0 else (4, 8)
+        ax.annotate("%d" % d, (x, y), textcoords="offset points",
+                    xytext=offset, fontsize=8)
+    ax.text(0.98, 0.04, "labels = Delta", transform=ax.transAxes,
+            ha="right", fontsize=8, color="gray")
+    ax.margins(y=0.08)
     ax.set_xlabel("CPU execution latency for 10,000 frames (seconds)")
     ax.set_ylabel("Moving average of normalized rate at the end")
     ax.set_title("Fig. 13 replication: rate vs. CPU latency (N=10)")

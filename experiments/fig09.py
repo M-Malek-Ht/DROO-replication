@@ -82,7 +82,7 @@ def plot():
         path = moving_average_plot(
             curves, FIGURES_DIR / ("fig09%s_%s.png" % (letter, panel)),
             title="Fig. 9(%s) replication: %s (N=10)" % (letter, LABELS[panel].lower()),
-            ylim=(0.92, 1.0))
+            ylim=(0.92, 1.0), legend_outside=(panel == "lr"))
         print("Saved", path)
 
 

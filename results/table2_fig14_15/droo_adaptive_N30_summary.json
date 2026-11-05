@@ -16,10 +16,10 @@
   },
   "summary": {
     "avg_normalized_rate_test": 0.9902476570614421,
-    "total_time_s": 1853.3314128999482,
-    "time_per_frame_s": 0.061777713763331604,
-    "cpu_time_s": 1829.0,
-    "cpu_time_per_frame_s": 0.06096666666666667
+    "total_time_s": 507.18383499997435,
+    "time_per_frame_s": 0.01690612783333248,
+    "cpu_time_s": 506.21875,
+    "cpu_time_per_frame_s": 0.016873958333333335
   },
   "environment": {
     "python": "3.12.10",
@@ -27,6 +27,6 @@
     "numpy": "2.5.4",
     "cpu": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD",
     "os": "Windows-11-10.0.26300-SP0",
-    "date": "2026-10-26 10:29:04"
+    "date": "2026-10-27 15:29:38"
   }
 }

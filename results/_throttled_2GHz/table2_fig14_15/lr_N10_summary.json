@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "channels": 6000,
+    "avg_normalized_rate": 0.9914664322454406,
+    "cpu_time_s": 51.3125,
+    "cpu_time_per_channel_s": 0.008552083333333333,
+    "cpu_time_per_channel_rebuilt_s": 0.13645833333333332
+  },
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "cpu": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD",
+    "os": "Windows-11-10.0.26300-SP0",
+    "date": "2026-10-26 09:59:08"
+  }
+}

@@ -2,8 +2,8 @@
   "summary": {
     "channels": 100,
     "avg_normalized_rate": 0.9999999760702771,
-    "cpu_time_s": 22.109375,
-    "cpu_time_per_channel_s": 0.22109375
+    "cpu_time_s": 6.203125,
+    "cpu_time_per_channel_s": 0.06203125
   },
   "environment": {
     "python": "3.12.10",
@@ -11,6 +11,6 @@
     "numpy": "2.5.4",
     "cpu": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD",
     "os": "Windows-11-10.0.26300-SP0",
-    "date": "2026-10-26 09:58:33"
+    "date": "2026-10-27 15:28:30"
   }
 }

@@ -279,12 +279,15 @@ def rolling(x, window=50):
 
 
 def moving_average_plot(curves, path, title, ylabel="Moving average of normalized rate",
-                        window=200, ylim=None, xlabel="Time frame t"):
+                        window=200, ylim=None, xlabel="Time frame t",
+                        legend_outside=False):
     """
     Several moving-average curves on one graph (style of Figs. 9-12).
     curves: list of (label, values) or (label, values, line_style)
+    legend_outside: put the legend to the right of the plot, so it cannot
+                    cover any curve
     """
-    fig, ax = plt.subplots(figsize=(8, 5))
+    fig, ax = plt.subplots(figsize=(10, 5) if legend_outside else (8, 5))
     for curve in curves:
         label, values = curve[0], curve[1]
         style = curve[2] if len(curve) > 2 else "-"
@@ -296,7 +299,10 @@ def moving_average_plot(curves, path, title, ylabel="Moving average of normalize
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     ax.grid(alpha=0.3)
-    ax.legend(fontsize=8)
+    if legend_outside:
+        ax.legend(fontsize=8, loc="center left", bbox_to_anchor=(1.01, 0.5))
+    else:
+        ax.legend(fontsize=8)
     fig.tight_layout()
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
