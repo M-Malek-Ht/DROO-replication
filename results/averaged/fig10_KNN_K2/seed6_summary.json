@@ -1,0 +1,25 @@
+{
+  "config": {
+    "N": 10,
+    "n": 10000,
+    "K_initial": 2,
+    "delta": null,
+    "decoder": "KNN",
+    "memory": 1024,
+    "batch_size": 128,
+    "train_interval": 10,
+    "lr": 0.01,
+    "seed": 6,
+    "data_name": "data_10",
+    "split": true,
+    "num_test": 2000,
+    "solver": "vectorized"
+  },
+  "summary": {
+    "avg_normalized_rate_test": 0.9232197792042203,
+    "total_time_s": 15.471380731999943,
+    "time_per_frame_s": 0.0015471380731999942,
+    "cpu_time_s": 15.40505784700008,
+    "cpu_time_per_frame_s": 0.001540505784700008
+  }
+}

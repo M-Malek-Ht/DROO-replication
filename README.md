@@ -56,12 +56,33 @@ All commands are run from the project folder.
 | Check that everything works (tiny runs) | `python experiments/run_all.py --quick` | ~3 min |
 | Check our fast solver against the authors' | `python baselines/test_p2_vectorized.py` | ~1 min |
 | Bonus: CPU vs GPU (in `.venv-gpu`, see below) | `python experiments/gpu_benchmark.py` | ~15 min |
+| **Averaged figures** (every figure over 10 seeds, see below) | `python experiments/averaged.py` | ~1 h on 4 cores |
 
 Each run saves `results/<experiment>/<run>.npz` (all recorded numbers) and
 `<run>_summary.json` (settings, headline numbers, machine info). Graphs are
 drawn from these files, so a graph can be redrawn without re-running.
 `run_all.py` skips runs whose results already exist, so it can be stopped
 and restarted.
+
+## Averaged figures (10 seeds)
+
+`experiments/averaged.py` re-runs every figure's setting with seeds 0-9 and
+draws one clean figure per paper figure in `figures/averaged/`: each setting
+is the **mean over the 10 seeds** of its moving average, with a light band of
+**+/-1 standard error** (Fig. 13/14: error bars = +/-1 std). Fig. 9's four
+panels are combined into one 2x2 figure, and the sweeps (Figs. 9-12) use a
+500-frame moving average to make the lines smooth. The per-setting mean, std,
+worst and best seed are in `results/averaged/summary.md`.
+
+To make 390 runs affordable these runs use `solver="vectorized"` in
+`run_droo()` (the authors' (P2) equations solved for all K candidates at
+once, `baselines/p2_vectorized.py`). It picks exactly the same actions as
+the authors' `bisection()`, about 8x faster. The Fig. 11-13 runs keep
+`bisection()`, because Fig. 13 plots CPU time. The seed-independent
+baselines of Fig. 14/15 (CD, LR, Edge, Local) and the Table 2 timings are
+reused from the single-seed runs.
+
+Options: `--seeds 5`, `--only fig09 fig10`, `--plot-only`, `--dry-run`.
 
 ## Bonus GPU environment
 

@@ -54,6 +54,8 @@ sys.path.insert(0, str(DROO_DIR))
 import torch                                  # noqa: E402
 from memoryPyTorch import MemoryDNN           # noqa: E402  (authors' code)
 from optimization import bisection            # noqa: E402  (authors' code)
+sys.path.insert(0, str(PROJECT_ROOT / "baselines"))
+from p2_vectorized import solve_p2            # noqa: E402  (our fast copy)
 
 # One CPU thread: the network is tiny, so extra threads only add overhead
 # (measured: ~8% faster on a Ryzen 9). This does not change any result.
@@ -88,7 +90,7 @@ def load_data(name):
 def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
              memory=1024, batch_size=128, train_interval=10, lr=0.01,
              seed=0, data_name=None, hook=None, split=True, verbose=True,
-             memory_class=None):
+             memory_class=None, solver="bisection"):
     """
     Run DROO once and return everything it recorded.
 
@@ -110,6 +112,12 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
                    state['weights'].
     memory_class   network class to use (default: the authors' MemoryDNN);
                    gpu_benchmark.py passes a GPU-capable copy
+    solver         'bisection' = the authors' bisection(), one call per
+                   candidate (the default, used for every original figure);
+                   'vectorized' = baselines/p2_vectorized.solve_p2, the same
+                   equations solved for all K candidates at once (matches
+                   bisection() to ~1e-16, see test_p2_vectorized.py; several
+                   times faster, used by the multi-seed runs in averaged.py)
     split          True  = 80/20 train/test split, as in mainPyTorch.py
                    False = frame i uses data sample i, as in the two demos
                            (demo_alternate_weights.py, demo_on_off.py)
@@ -178,7 +186,11 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
         #    (with all WDs active this is exactly mainPyTorch.py's call)
         Na = state["N_active"]
         w = state["weights"][:Na] if len(state["weights"]) else []
-        r_list = [bisection(h[:Na] / 1000000, m[:Na], w)[0] for m in m_list]
+        if solver == "vectorized":
+            r_list = list(solve_p2(h[:Na] / 1000000,
+                                   np.asarray(m_list)[:, :Na], w)["Q"])
+        else:
+            r_list = [bisection(h[:Na] / 1000000, m[:Na], w)[0] for m in m_list]
         best = int(np.argmax(r_list))
 
         # 3) store the best (h, action) pair and train every train_interval
@@ -198,7 +210,7 @@ def run_droo(N=10, n=10000, K=None, delta=None, decoder="OP",
         "config": dict(N=N, n=n, K_initial=K_initial, delta=delta, decoder=decoder, memory=memory,
                        batch_size=batch_size, train_interval=train_interval,
                        lr=lr, seed=seed, data_name=data_name,
-                       split=split, num_test=num_test),
+                       split=split, num_test=num_test, solver=solver),
         "rate": np.asarray(rate_his),
         "rate_ratio": rate_ratio,
         "k_idx": np.asarray(k_idx_his),
